@@ -78,8 +78,6 @@
         <form method="POST" action="/add_subject">
             <input name="name" placeholder="Subject Name" required>
             <input type="number" name="exam_timer" placeholder="Timer in seconds" required>
-            <input type="time" name="start_time" value="00:00" required>
-            <input type="time" name="end_time" value="23:59" required>
             <button type="submit" class="btn btn-save">Add Subject</button>
         </form>
     </div>
@@ -90,15 +88,11 @@
             <tr>
                 <th>Name</th>
                 <th>Timer</th>
-                <th>Start</th>
-                <th>End</th>
             </tr>
             {% for s in subjects %}
             <tr>
                 <td>{{ s.name }}</td>
                 <td>{{ s.exam_timer }}</td>
-                <td>{{ s.start_time }}</td>
-                <td>{{ s.end_time }}</td>
             </tr>
             {% endfor %}
         </table>
