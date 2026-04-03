@@ -9,93 +9,71 @@
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #d4fc79, #96e6a1);
         }
-
         .container{
             width:90%;
             max-width:900px;
             margin:30px auto;
         }
-
         .card{
             background:white;
             border-radius:16px;
-            box-shadow:0 6px 16px rgba(0,0,0,0.12);
             padding:20px;
             margin-bottom:16px;
+            box-shadow:0 6px 16px rgba(0,0,0,0.12);
         }
-
-        .top{
-            text-align:center;
-            margin-bottom:25px;
-        }
-
         .question{
             font-weight:bold;
             color:#1d4ed8;
             margin-bottom:10px;
         }
-
-        .answer{
-            color:#111827;
-        }
-
-        .not-answered{
-            color:#dc2626;
-            font-weight:bold;
-        }
-
-        .buttons{
-            display:flex;
-            justify-content:center;
-            gap:12px;
-            flex-wrap:wrap;
-            margin-top:25px;
-        }
-
         .btn{
-            text-decoration:none;
-            border:none;
             padding:14px 24px;
-            border-radius:26px;
+            border:none;
+            border-radius:25px;
             color:white;
             font-weight:bold;
             cursor:pointer;
-            display:inline-block;
         }
-
-        .btn-back{ background:#6b7280; }
-        .btn-submit{ background:#16a34a; }
+        .submit{ background:#16a34a; }
+        .back{ background:#6b7280; }
+        .footer{
+            text-align:center;
+            padding:20px;
+            font-weight:bold;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="top">
-            <h2>Review Your Answers</h2>
+<div class="container">
+    <h2 style="text-align:center;">Review - {{ subject_name }}</h2>
+
+    {% for q in questions %}
+    <div class="card">
+        <div class="question">
+            Question {{ loop.index }}: {{ q.question }}
         </div>
 
-        {% for q in questions %}
-        <div class="card">
-            <div class="question">
-                Question {{ loop.index }}: {{ q.question }}
-            </div>
-
-            {% if answers[q.id] %}
-                <div class="answer">Your Answer: {{ answers[q.id] }}</div>
-            {% else %}
-                <div class="not-answered">Not Answered</div>
-            {% endif %}
-        </div>
-        {% endfor %}
-
-        <div class="buttons">
-            <a href="/student" class="btn btn-back">Back to Exam</a>
-
-            <form method="POST" action="/submit" style="margin:0;">
-                <button type="submit" class="btn btn-submit">Submit Final</button>
-            </form>
-        </div>
+        {% if answers[str(q.id)] %}
+            <p>Your Answer: {{ answers[str(q.id)] }}</p>
+        {% else %}
+            <p style="color:red;">Not Answered</p>
+        {% endif %}
     </div>
+    {% endfor %}
+
+    <div style="text-align:center;">
+        <a href="/student/{{ subject_id }}"><button class="btn back">Back</button></a>
+
+        <form method="POST" action="/submit" style="display:inline;">
+            <button class="btn submit">Submit Final</button>
+        </form>
+    </div>
+</div>
+
+<div class="footer">
+    Designed by Ifelodun | noplysola@gmail.com
+</div>
 
 </body>
 </html>
