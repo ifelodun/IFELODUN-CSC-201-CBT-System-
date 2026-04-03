@@ -6,10 +6,8 @@ app.secret_key = "secret123"
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
 db = SQLAlchemy(app)
 
-# ================= MODELS =================
 
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -37,28 +35,25 @@ class Subject(db.Model):
     exam_timer = db.Column(db.Integer, default=120)
 
 
-# ================= LOGIN =================
-
 @app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
+        # student login fields
+        name = request.form.get("name", "").strip()
+        student_id = request.form.get("student_id", "").strip()
 
-        # student login
-        name = request.form.get("name")
-        student_id = request.form.get("student_id")
+        # admin login fields
+        admin_username = request.form.get("admin_username", "").strip()
+        admin_password = request.form.get("admin_password", "").strip()
 
         # admin login
-        admin_user = request.form.get("admin_username")
-        admin_pass = request.form.get("admin_password")
-
-        # admin check
-        if admin_user == "admin" and admin_pass == "admin123":
+        if admin_username == "admin" and admin_password == "admin123":
             session.clear()
             session["admin"] = True
             return redirect("/admin")
 
-        # student check
-        if name:
+        # student login
+        if name and student_id:
             session.clear()
             session["student"] = name
             session["student_id"] = student_id
@@ -67,15 +62,12 @@ def login():
     return render_template("login.html")
 
 
-# ================= STUDENT HOME =================
-
 @app.route("/home")
 def home():
     if "student" not in session:
         return redirect("/")
 
     subjects = Subject.query.all()
-
     return render_template(
         "home.html",
         subjects=subjects,
@@ -83,16 +75,12 @@ def home():
     )
 
 
-# ================= START EXAM =================
-
 @app.route("/student/<int:subject_id>")
 def student(subject_id):
     if "student" not in session:
         return redirect("/")
 
     subject = Subject.query.get_or_404(subject_id)
-
-    # VERY IMPORTANT
     session["current_subject"] = subject.name
 
     questions = Question.query.filter_by(subject=subject.name).all()
@@ -106,15 +94,12 @@ def student(subject_id):
     )
 
 
-# ================= SUBMIT =================
-
 @app.route("/submit", methods=["POST"])
 def submit():
     if "student" not in session:
         return redirect("/")
 
     subject = session.get("current_subject")
-
     if not subject:
         return redirect("/home")
 
@@ -125,15 +110,11 @@ def submit():
 
     for q in questions:
         user = request.form.get(str(q.id))
-
-        # SAFE CHECK
-        if user and q.answer:
-            if user.strip() == q.answer.strip():
-                score += 1
+        if user and q.answer and user.strip() == q.answer.strip():
+            score += 1
 
     percentage = round((score / total) * 100, 2) if total else 0
 
-    # grading
     if percentage >= 70:
         grade = "A"
     elif percentage >= 60:
@@ -169,8 +150,6 @@ def submit():
     )
 
 
-# ================= ADMIN =================
-
 @app.route("/admin")
 def admin():
     if "admin" not in session:
@@ -186,25 +165,21 @@ def admin():
     )
 
 
-# ================= ADD SUBJECT =================
-
 @app.route("/add_subject", methods=["POST"])
 def add_subject():
     if "admin" not in session:
         return redirect("/")
 
-    name = request.form.get("name")
-    timer = request.form.get("exam_timer")
+    name = request.form.get("name", "").strip()
+    timer = request.form.get("exam_timer", "").strip()
 
-    if name:
+    if name and timer:
         subject = Subject(name=name, exam_timer=int(timer))
         db.session.add(subject)
         db.session.commit()
 
     return redirect("/admin")
 
-
-# ================= ADD QUESTION =================
 
 @app.route("/add", methods=["GET", "POST"])
 def add():
@@ -223,16 +198,12 @@ def add():
             opt4=request.form.get("opt4"),
             answer=request.form.get("answer")
         )
-
         db.session.add(q)
         db.session.commit()
-
         return redirect("/admin")
 
     return render_template("add.html", subjects=subjects)
 
-
-# ================= DELETE =================
 
 @app.route("/delete/<int:id>")
 def delete(id):
@@ -240,7 +211,6 @@ def delete(id):
         return redirect("/")
 
     q = Question.query.get(id)
-
     if q:
         db.session.delete(q)
         db.session.commit()
@@ -248,18 +218,13 @@ def delete(id):
     return redirect("/admin")
 
 
-# ================= LOGOUT =================
-
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect("/")
 
 
-# ================= RUN =================
-
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-
     app.run(debug=True)
