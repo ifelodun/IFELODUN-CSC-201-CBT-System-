@@ -6,11 +6,11 @@
     <style>
         body{
             margin:0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #f6d365, #fda085);
+            font-family:Arial, sans-serif;
+            background:linear-gradient(135deg,#f6d365,#fda085);
         }
         .topbar{
-            background: linear-gradient(90deg, #141e30, #243b55);
+            background:linear-gradient(90deg,#141e30,#243b55);
             color:white;
             padding:16px 20px;
             display:flex;
@@ -49,7 +49,6 @@
         .btn-save{ background:#16a34a; }
         .btn-add{ background:#2563eb; }
         .btn-delete{ background:#dc2626; }
-        .btn-edit{ background:#f59e0b; }
         .btn-logout{ background:#dc2626; }
         table{
             width:100%;
@@ -79,8 +78,8 @@
         <form method="POST" action="/add_subject">
             <input name="name" placeholder="Subject Name" required>
             <input type="number" name="exam_timer" placeholder="Timer in seconds" required>
-            <input type="time" name="start_time" required>
-            <input type="time" name="end_time" required>
+            <input type="time" name="start_time" value="00:00" required>
+            <input type="time" name="end_time" value="23:59" required>
             <button type="submit" class="btn btn-save">Add Subject</button>
         </form>
     </div>
@@ -93,19 +92,13 @@
                 <th>Timer</th>
                 <th>Start</th>
                 <th>End</th>
-                <th>Update</th>
-                <th>Delete</th>
             </tr>
             {% for s in subjects %}
             <tr>
-                <form method="POST" action="/update_subject/{{ s.id }}">
-                    <td><input name="name" value="{{ s.name }}" required></td>
-                    <td><input type="number" name="exam_timer" value="{{ s.exam_timer }}" required></td>
-                    <td><input type="time" name="start_time" value="{{ s.start_time }}" required></td>
-                    <td><input type="time" name="end_time" value="{{ s.end_time }}" required></td>
-                    <td><button type="submit" class="btn btn-save">Save</button></td>
-                    <td><a href="/delete_subject/{{ s.id }}" class="btn btn-delete">Delete</a></td>
-                </form>
+                <td>{{ s.name }}</td>
+                <td>{{ s.exam_timer }}</td>
+                <td>{{ s.start_time }}</td>
+                <td>{{ s.end_time }}</td>
             </tr>
             {% endfor %}
         </table>
@@ -114,9 +107,6 @@
     <div class="card">
         <h2>Admin Tools</h2>
         <a href="/add" class="btn btn-add">Add Question</a>
-        <a href="/import_excel" class="btn btn-add">Import Excel</a>
-        <a href="/results" class="btn btn-add">View Results Dashboard</a>
-        <a href="/leaderboard" class="btn btn-add">View Leaderboard</a>
     </div>
 
     <div class="card">
@@ -127,7 +117,6 @@
                 <th>Subject</th>
                 <th>Question</th>
                 <th>Answer</th>
-                <th>Edit</th>
                 <th>Delete</th>
             </tr>
             {% for q in questions %}
@@ -136,7 +125,6 @@
                 <td>{{ q.subject }}</td>
                 <td>{{ q.question }}</td>
                 <td>{{ q.answer }}</td>
-                <td><a href="/edit_question/{{ q.id }}" class="btn btn-edit">Edit</a></td>
                 <td><a href="/delete/{{ q.id }}" class="btn btn-delete">Delete</a></td>
             </tr>
             {% endfor %}
