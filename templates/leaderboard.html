@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaderboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body{
+            margin:0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #fddb92, #d1fdff);
+        }
+        .container{
+            width:90%;
+            max-width:900px;
+            margin:30px auto;
+        }
+        .card{
+            background:white;
+            border-radius:18px;
+            box-shadow:0 8px 20px rgba(0,0,0,0.12);
+            padding:25px;
+        }
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+        th, td{
+            border:1px solid #ddd;
+            padding:12px;
+            text-align:left;
+        }
+        th{
+            background:#f3f4f6;
+        }
+        .btn{
+            text-decoration:none;
+            padding:10px 18px;
+            border-radius:24px;
+            color:white;
+            font-weight:bold;
+            display:inline-block;
+            background:#2563eb;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h2>Leaderboard</h2>
+        <table>
+            <tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Student ID</th>
+                <th>Subject</th>
+                <th>Score</th>
+                <th>Total</th>
+            </tr>
+            {% for r in results %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ r.name }}</td>
+                <td>{{ r.student_id }}</td>
+                <td>{{ r.subject }}</td>
+                <td>{{ r.score }}</td>
+                <td>{{ r.total }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <a href="/admin" class="btn">Back to Admin</a>
+    </div>
+</div>
+
+</body>
+</html>
