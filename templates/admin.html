@@ -9,7 +9,6 @@
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #f6d365, #fda085);
         }
-
         .topbar{
             background: linear-gradient(90deg, #141e30, #243b55);
             color:white;
@@ -18,29 +17,24 @@
             justify-content:space-between;
             align-items:center;
         }
-
         .container{
             width:90%;
             max-width:1100px;
             margin:30px auto;
         }
-
         .card{
             background:white;
             border-radius:18px;
             box-shadow:0 8px 20px rgba(0,0,0,0.12);
             padding:25px;
-        }
-
-        .actions{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
             margin-bottom:20px;
-            gap:10px;
-            flex-wrap:wrap;
         }
-
+        input{
+            padding:10px;
+            margin:5px;
+            border:1px solid #ccc;
+            border-radius:10px;
+        }
         .btn{
             text-decoration:none;
             padding:10px 18px;
@@ -48,77 +42,108 @@
             color:white;
             font-weight:bold;
             display:inline-block;
+            border:none;
+            cursor:pointer;
+            margin:4px;
         }
-
+        .btn-save{ background:#16a34a; }
         .btn-add{ background:#2563eb; }
+        .btn-delete{ background:#dc2626; }
+        .btn-edit{ background:#f59e0b; }
         .btn-logout{ background:#dc2626; }
-        .btn-delete{ background:#dc2626; padding:8px 14px; border-radius:18px; }
-
         table{
             width:100%;
             border-collapse:collapse;
-            background:white;
         }
-
         th, td{
             border:1px solid #ddd;
             padding:12px;
             text-align:left;
-            vertical-align:top;
         }
-
         th{
             background:#f3f4f6;
-        }
-
-        .empty{
-            text-align:center;
-            padding:30px;
-            color:#555;
         }
     </style>
 </head>
 <body>
 
-    <div class="topbar">
-        <div><strong>Admin Dashboard</strong></div>
-        <a href="/logout" class="btn btn-logout">Logout</a>
+<div class="topbar">
+    <div><strong>Admin Dashboard</strong></div>
+    <a href="/logout" class="btn btn-logout">Logout</a>
+</div>
+
+<div class="container">
+
+    <div class="card">
+        <h2>Add Subject</h2>
+        <form method="POST" action="/add_subject">
+            <input name="name" placeholder="Subject Name" required>
+            <input type="number" name="exam_timer" placeholder="Timer in seconds" required>
+            <input type="time" name="start_time" required>
+            <input type="time" name="end_time" required>
+            <button type="submit" class="btn btn-save">Add Subject</button>
+        </form>
     </div>
 
-    <div class="container">
-        <div class="card">
-            <div class="actions">
-                <h2 style="margin:0;">CSC 201 Questions</h2>
-                <a href="/add" class="btn btn-add">Add Question</a>
-            </div>
-
-            <table>
-                <tr>
-                    <th>#</th>
-                    <th>Question</th>
-                    <th>Answer</th>
-                    <th>Action</th>
-                </tr>
-
-                {% if questions|length == 0 %}
-                <tr>
-                    <td colspan="4" class="empty">No questions added yet.</td>
-                </tr>
-                {% else %}
-                    {% for q in questions %}
-                    <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>{{ q.question }}</td>
-                        <td>{{ q.answer }}</td>
-                        <td>
-                            <a href="/delete/{{ q.id }}" class="btn btn-delete">Delete</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                {% endif %}
-            </table>
-        </div>
+    <div class="card">
+        <h2>All Subjects</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Timer</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+            {% for s in subjects %}
+            <tr>
+                <form method="POST" action="/update_subject/{{ s.id }}">
+                    <td><input name="name" value="{{ s.name }}" required></td>
+                    <td><input type="number" name="exam_timer" value="{{ s.exam_timer }}" required></td>
+                    <td><input type="time" name="start_time" value="{{ s.start_time }}" required></td>
+                    <td><input type="time" name="end_time" value="{{ s.end_time }}" required></td>
+                    <td><button type="submit" class="btn btn-save">Save</button></td>
+                    <td><a href="/delete_subject/{{ s.id }}" class="btn btn-delete">Delete</a></td>
+                </form>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
+
+    <div class="card">
+        <h2>Admin Tools</h2>
+        <a href="/add" class="btn btn-add">Add Question</a>
+        <a href="/import_excel" class="btn btn-add">Import Excel</a>
+        <a href="/results" class="btn btn-add">View Results Dashboard</a>
+        <a href="/leaderboard" class="btn btn-add">View Leaderboard</a>
+    </div>
+
+    <div class="card">
+        <h2>Questions</h2>
+        <table>
+            <tr>
+                <th>#</th>
+                <th>Subject</th>
+                <th>Question</th>
+                <th>Answer</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+            {% for q in questions %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ q.subject }}</td>
+                <td>{{ q.question }}</td>
+                <td>{{ q.answer }}</td>
+                <td><a href="/edit_question/{{ q.id }}" class="btn btn-edit">Edit</a></td>
+                <td><a href="/delete/{{ q.id }}" class="btn btn-delete">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
 
 </body>
 </html>
