@@ -3,6 +3,7 @@
 <head>
     <title>CBT Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <style>
         body{
             min-height:100vh;
@@ -10,30 +11,35 @@
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #4facfe, #00f2fe, #43e97b);
         }
+
         .main-card{
             max-width:750px;
-            margin:80px auto 30px auto;
+            margin:50px auto;
             background:white;
-            border-radius:22px;
+            border-radius:20px;
             box-shadow:0 15px 35px rgba(0,0,0,0.2);
             overflow:hidden;
         }
+
         .header{
             background: linear-gradient(90deg, #6a11cb, #2575fc);
             color:white;
             text-align:center;
             padding:25px;
         }
+
         .body{
-            padding:40px;
+            padding:30px;
             text-align:center;
         }
+
         .subject-box{
-            margin: 12px 0;
-            padding: 16px;
+            margin: 18px 0;
+            padding: 20px;
             background: #f3f4f6;
             border-radius: 14px;
         }
+
         .btn{
             display:inline-block;
             text-decoration:none;
@@ -44,33 +50,43 @@
             margin-top:10px;
             background:#16a34a;
         }
+
         .btn-logout{
             background:#dc2626;
             margin-top:20px;
         }
-        .closed{
-            color:#dc2626;
-            font-weight:bold;
-        }
+
         .open{
             color:#16a34a;
             font-weight:bold;
         }
+
+        .closed{
+            color:#dc2626;
+            font-weight:bold;
+        }
+
+        .time{
+            font-size:14px;
+            color:#444;
+        }
+
         .footer{
             text-align:center;
-            color:#222;
             font-size:14px;
-            margin-bottom:30px;
+            margin-top:20px;
             font-weight:bold;
         }
     </style>
 </head>
+
 <body>
 
 <div class="main-card">
+
     <div class="header">
         <h2>CBT Platform</h2>
-        <p>Choose Subject</p>
+        <p>Select Your Subject</p>
     </div>
 
     <div class="body">
@@ -78,26 +94,39 @@
 
         {% for subject in subjects %}
         <div class="subject-box">
+
             <h3>{{ subject.name }}</h3>
             <p>Timer: {{ subject.exam_timer }} seconds</p>
-            <p>Available: {{ subject.start_time }} - {{ subject.end_time }}</p>
+            <p class="time">Available: {{ subject.start_time }} - {{ subject.end_time }}</p>
 
-            {% if subject.start_time <= now <= subject.end_time %}
-                <p class="open">Open Now</p>
-                <a href="/student/{{ subject.id }}" class="btn">Start {{ subject.name }}</a>
+            {% if subject.start_time and subject.end_time %}
+                {% if subject.start_time <= now <= subject.end_time %}
+                    <p class="open">Available Now</p>
+                    <a href="/student/{{ subject.id }}" class="btn">
+                        Start Exam
+                    </a>
+                {% else %}
+                    <p class="closed">Not Available Now</p>
+                {% endif %}
             {% else %}
-                <p class="closed">Not Available Now</p>
+                <p class="open">Available Anytime</p>
+                <a href="/student/{{ subject.id }}" class="btn">
+                    Start Exam
+                </a>
             {% endif %}
+
         </div>
         {% endfor %}
 
         <br>
         <a href="/logout" class="btn btn-logout">Logout</a>
+
     </div>
+
 </div>
 
 <div class="footer">
-    Designed by Ifelodun | Contact: noplysola@gmail.com
+    Designed by Ifelodun | Email: noplysola@gmail.com
 </div>
 
 </body>
