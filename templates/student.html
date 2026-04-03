@@ -1,107 +1,213 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CSC 201 CBT Exam</title>
+    <title>{{ subject_name }} CBT Exam</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
             background: linear-gradient(90deg, #f6d2b8, #a7c7f2);
         }
-
         .topbar {
             background: linear-gradient(90deg, #ff3d6e, #ff8c32);
             color: white;
             padding: 14px 18px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
         }
-
+        .right-box {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
         .pill {
             background: white;
             color: #ff4b5c;
-            padding: 8px 15px;
-            border-radius: 20px;
+            padding: 10px 18px;
+            border-radius: 22px;
             font-weight: bold;
         }
-
         .container {
-            width: 80%;
+            width: 82%;
             margin: 20px auto;
         }
-
-        .question {
+        .palette {
+            position: fixed;
+            right: 10px;
+            top: 100px;
             background: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 150px;
         }
-
-        .btn {
+        .palette a {
+            display: inline-block;
+            margin: 3px;
+            padding: 6px 10px;
+            background: #2563eb;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .progress-wrap {
             width: 100%;
-            padding: 15px;
-            border-radius: 25px;
-            border: none;
+            background: #ddd;
+            height: 10px;
+            margin-bottom: 20px;
+        }
+        .progress-bar {
+            width: 0%;
+            height: 10px;
             background: green;
+        }
+        .question-card {
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .question-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1f3c88;
+            margin-bottom: 15px;
+        }
+        .option {
+            margin: 10px 0;
+            padding: 10px 12px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: block;
+        }
+        .submit-btn {
+            width: 100%;
+            border: none;
+            padding: 16px;
+            border-radius: 30px;
+            background: linear-gradient(90deg, #11998e, #38ef7d);
             color: white;
             font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #222;
+            font-size: 14px;
+            font-weight: bold;
         }
     </style>
 </head>
-
 <body>
 
-<div class="topbar">
-    <div>CSC 201 CBT</div>
-    <div>
-        <span class="pill">Student: {{ student_name }}</span>
-        <span class="pill" id="timer">Time: 120</span>
+    <div class="topbar">
+        <div>{{ subject_name }} CBT</div>
+        <div class="right-box">
+            <div class="pill">Student: {{ student_name }}</div>
+            <div class="pill" id="timer">Time: {{ exam_timer }}</div>
+        </div>
     </div>
-</div>
 
-<div class="container">
+    <div class="container">
+        <div class="progress-wrap">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
 
-<form method="POST" action="/review" id="examForm">
+        <form method="POST" action="/review/{{ subject_id }}" id="examForm">
+            {% for q in questions %}
+            <div class="question-card" id="q{{ q.id }}">
+                <div class="question-title">
+                    Question {{ loop.index }}: {{ q.question }}
+                </div>
 
-{% if questions|length == 0 %}
-    <h3>No questions added yet</h3>
-{% else %}
+                <label class="option">
+                    <input type="radio" name="{{ q.id }}" value="{{ q.opt1 }}"> {{ q.opt1 }}
+                </label>
+                <label class="option">
+                    <input type="radio" name="{{ q.id }}" value="{{ q.opt2 }}"> {{ q.opt2 }}
+                </label>
+                <label class="option">
+                    <input type="radio" name="{{ q.id }}" value="{{ q.opt3 }}"> {{ q.opt3 }}
+                </label>
+                <label class="option">
+                    <input type="radio" name="{{ q.id }}" value="{{ q.opt4 }}"> {{ q.opt4 }}
+                </label>
+            </div>
+            {% endfor %}
 
-    {% for q in questions %}
-    <div class="question">
-        <p><strong>Question {{ loop.index }}</strong></p>
-        <p>{{ q.question }}</p>
-
-        <input type="radio" name="{{ q.id }}" value="{{ q.opt1 }}"> {{ q.opt1 }}<br>
-        <input type="radio" name="{{ q.id }}" value="{{ q.opt2 }}"> {{ q.opt2 }}<br>
-        <input type="radio" name="{{ q.id }}" value="{{ q.opt3 }}"> {{ q.opt3 }}<br>
-        <input type="radio" name="{{ q.id }}" value="{{ q.opt4 }}"> {{ q.opt4 }}<br>
+            <button type="submit" class="submit-btn">Proceed to Review</button>
+        </form>
     </div>
-    {% endfor %}
 
-{% endif %}
+    <div class="palette">
+        <h4>Questions</h4>
+        {% for q in questions %}
+            <a href="#q{{ q.id }}">{{ loop.index }}</a>
+        {% endfor %}
+    </div>
 
-<button class="btn">Proceed to Review</button>
+    <div class="footer">
+        Designed by Ifelodun | Contact: noplysola@gmail.com
+    </div>
 
-</form>
+    <script>
+        let time = {{ exam_timer }};
 
-</div>
+        setInterval(() => {
+            time--;
+            document.getElementById("timer").innerHTML = "Time: " + time;
 
-<script>
-let time = 120;
+            if (time <= 0) {
+                document.getElementById("examForm").submit();
+            }
+        }, 1000);
 
-setInterval(() => {
-    time--;
-    document.getElementById("timer").innerHTML = "Time: " + time;
+        // anti-cheat
+        document.addEventListener("visibilitychange", function () {
+            if (document.hidden) {
+                alert("Tab switch detected! Exam will submit.");
+                document.getElementById("examForm").submit();
+            }
+        });
 
-    if (time <= 0) {
-        document.getElementById("examForm").submit();
-    }
-}, 1000);
-</script>
+        // auto save
+        window.onload = () => {
+            let saved = JSON.parse(localStorage.getItem("answers") || "{}");
+
+            for (let key in saved) {
+                let input = document.querySelector(`input[name='${key}'][value='${saved[key]}']`);
+                if (input) input.checked = true;
+            }
+            updateProgress();
+        };
+
+        document.querySelectorAll("input[type=radio]").forEach(input => {
+            input.addEventListener("change", () => {
+                let answers = JSON.parse(localStorage.getItem("answers") || "{}");
+                answers[input.name] = input.value;
+                localStorage.setItem("answers", JSON.stringify(answers));
+                updateProgress();
+            });
+        });
+
+        function updateProgress() {
+            let total = {{ questions|length }};
+            let answered = new Set();
+
+            document.querySelectorAll("input[type=radio]:checked").forEach(i => {
+                answered.add(i.name);
+            });
+
+            let percent = total > 0 ? (answered.size / total) * 100 : 0;
+            document.getElementById("progressBar").style.width = percent + "%";
+        }
+    </script>
 
 </body>
 </html>
