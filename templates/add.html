@@ -9,27 +9,18 @@
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #84fab0, #8fd3f4);
         }
-
         .container{
             width:90%;
             max-width:700px;
             margin:40px auto;
         }
-
         .card{
             background:white;
             border-radius:18px;
             box-shadow:0 8px 20px rgba(0,0,0,0.12);
             padding:25px;
         }
-
-        h2{
-            margin-top:0;
-            text-align:center;
-            color:#1d4ed8;
-        }
-
-        input{
+        input, select{
             width:100%;
             box-sizing:border-box;
             padding:12px;
@@ -38,14 +29,6 @@
             border-radius:10px;
             font-size:15px;
         }
-
-        .buttons{
-            display:flex;
-            justify-content:space-between;
-            gap:10px;
-            flex-wrap:wrap;
-        }
-
         .btn{
             text-decoration:none;
             border:none;
@@ -56,32 +39,36 @@
             cursor:pointer;
             display:inline-block;
         }
-
         .btn-back{ background:#6b7280; }
         .btn-save{ background:#16a34a; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="card">
-            <h2>Add New Question</h2>
+<div class="container">
+    <div class="card">
+        <h2>Add New Question</h2>
 
-            <form method="POST">
-                <input name="question" placeholder="Enter question" required>
-                <input name="opt1" placeholder="Option 1" required>
-                <input name="opt2" placeholder="Option 2" required>
-                <input name="opt3" placeholder="Option 3" required>
-                <input name="opt4" placeholder="Option 4" required>
-                <input name="answer" placeholder="Correct answer (must match one option exactly)" required>
+        <form method="POST">
+            <select name="subject" required>
+                <option value="">Select Subject</option>
+                {% for s in subjects %}
+                <option value="{{ s.name }}">{{ s.name }}</option>
+                {% endfor %}
+            </select>
 
-                <div class="buttons">
-                    <a href="/admin" class="btn btn-back">Back</a>
-                    <button type="submit" class="btn btn-save">Save Question</button>
-                </div>
-            </form>
-        </div>
+            <input name="question" placeholder="Enter question" required>
+            <input name="opt1" placeholder="Option 1" required>
+            <input name="opt2" placeholder="Option 2" required>
+            <input name="opt3" placeholder="Option 3" required>
+            <input name="opt4" placeholder="Option 4" required>
+            <input name="answer" placeholder="Correct answer" required>
+
+            <a href="/admin" class="btn btn-back">Back</a>
+            <button type="submit" class="btn btn-save">Save Question</button>
+        </form>
     </div>
+</div>
 
 </body>
 </html>
