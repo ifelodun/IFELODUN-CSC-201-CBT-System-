@@ -42,17 +42,22 @@ class Subject(db.Model):
 @app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
+
+        # student login
         name = request.form.get("name")
         student_id = request.form.get("student_id")
 
+        # admin login
         admin_user = request.form.get("admin_username")
         admin_pass = request.form.get("admin_password")
 
+        # admin check
         if admin_user == "admin" and admin_pass == "admin123":
             session.clear()
             session["admin"] = True
             return redirect("/admin")
 
+        # student check
         if name:
             session.clear()
             session["student"] = name
@@ -62,7 +67,7 @@ def login():
     return render_template("login.html")
 
 
-# ================= HOME =================
+# ================= STUDENT HOME =================
 
 @app.route("/home")
 def home():
@@ -78,7 +83,7 @@ def home():
     )
 
 
-# ================= EXAM =================
+# ================= START EXAM =================
 
 @app.route("/student/<int:subject_id>")
 def student(subject_id):
@@ -87,6 +92,7 @@ def student(subject_id):
 
     subject = Subject.query.get_or_404(subject_id)
 
+    # VERY IMPORTANT
     session["current_subject"] = subject.name
 
     questions = Question.query.filter_by(subject=subject.name).all()
@@ -109,6 +115,9 @@ def submit():
 
     subject = session.get("current_subject")
 
+    if not subject:
+        return redirect("/home")
+
     questions = Question.query.filter_by(subject=subject).all()
 
     score = 0
@@ -116,22 +125,31 @@ def submit():
 
     for q in questions:
         user = request.form.get(str(q.id))
-        if user and user.strip() == q.answer.strip():
-            score += 1
 
-    percent = round((score / total) * 100, 2) if total else 0
+        # SAFE CHECK
+        if user and q.answer:
+            if user.strip() == q.answer.strip():
+                score += 1
 
-    grade = "F"
-    if percent >= 70:
+    percentage = round((score / total) * 100, 2) if total else 0
+
+    # grading
+    if percentage >= 70:
         grade = "A"
-    elif percent >= 60:
+    elif percentage >= 60:
         grade = "B"
-    elif percent >= 50:
+    elif percentage >= 50:
         grade = "C"
+    elif percentage >= 45:
+        grade = "D"
+    elif percentage >= 40:
+        grade = "E"
+    else:
+        grade = "F"
 
     result = Result(
-        name=session["student"],
-        student_id=session["student_id"],
+        name=session.get("student"),
+        student_id=session.get("student_id"),
         subject=subject,
         score=score,
         total=total
@@ -144,9 +162,9 @@ def submit():
         "result.html",
         score=score,
         total=total,
-        percentage=percent,
+        percentage=percentage,
         grade=grade,
-        student_name=session["student"],
+        student_name=session.get("student"),
         subject_name=subject
     )
 
@@ -158,10 +176,13 @@ def admin():
     if "admin" not in session:
         return redirect("/")
 
+    questions = Question.query.all()
+    subjects = Subject.query.all()
+
     return render_template(
         "admin.html",
-        questions=Question.query.all(),
-        subjects=Subject.query.all()
+        questions=questions,
+        subjects=subjects
     )
 
 
@@ -175,8 +196,10 @@ def add_subject():
     name = request.form.get("name")
     timer = request.form.get("exam_timer")
 
-    db.session.add(Subject(name=name, exam_timer=int(timer)))
-    db.session.commit()
+    if name:
+        subject = Subject(name=name, exam_timer=int(timer))
+        db.session.add(subject)
+        db.session.commit()
 
     return redirect("/admin")
 
@@ -217,8 +240,10 @@ def delete(id):
         return redirect("/")
 
     q = Question.query.get(id)
-    db.session.delete(q)
-    db.session.commit()
+
+    if q:
+        db.session.delete(q)
+        db.session.commit()
 
     return redirect("/admin")
 
