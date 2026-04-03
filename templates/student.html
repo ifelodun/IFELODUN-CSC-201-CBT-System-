@@ -1,213 +1,139 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ subject_name }} CBT Exam</title>
+    <title>Exam</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body {
-            margin: 0;
+        body{
+            margin:0;
             font-family: Arial, sans-serif;
-            background: linear-gradient(90deg, #f6d2b8, #a7c7f2);
+            background: linear-gradient(135deg, #ff758c, #42a5f5);
         }
-        .topbar {
-            background: linear-gradient(90deg, #ff3d6e, #ff8c32);
-            color: white;
-            padding: 14px 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
+
+        .header{
+            background:#ff4b2b;
+            color:white;
+            padding:15px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
         }
-        .right-box {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
+
+        .container{
+            width:90%;
+            margin:20px auto;
         }
-        .pill {
-            background: white;
-            color: #ff4b5c;
-            padding: 10px 18px;
-            border-radius: 22px;
-            font-weight: bold;
+
+        .card{
+            background:white;
+            padding:20px;
+            border-radius:15px;
+            margin-bottom:20px;
+            box-shadow:0 6px 15px rgba(0,0,0,0.15);
         }
-        .container {
-            width: 82%;
-            margin: 20px auto;
+
+        .question{
+            font-weight:bold;
+            color:#1e3a8a;
+            margin-bottom:10px;
         }
-        .palette {
-            position: fixed;
-            right: 10px;
-            top: 100px;
-            background: white;
-            padding: 10px;
-            border-radius: 10px;
-            max-width: 150px;
+
+        label{
+            display:block;
+            padding:10px;
+            background:#f1f5f9;
+            margin-bottom:8px;
+            border-radius:10px;
+            cursor:pointer;
         }
-        .palette a {
-            display: inline-block;
-            margin: 3px;
-            padding: 6px 10px;
-            background: #2563eb;
-            color: white;
-            border-radius: 5px;
-            text-decoration: none;
+
+        .submit-btn{
+            width:100%;
+            padding:15px;
+            background:linear-gradient(to right, #16a34a, #22c55e);
+            color:white;
+            border:none;
+            border-radius:25px;
+            font-size:18px;
+            font-weight:bold;
+            cursor:pointer;
         }
-        .progress-wrap {
-            width: 100%;
-            background: #ddd;
-            height: 10px;
-            margin-bottom: 20px;
+
+        .timer{
+            background:white;
+            padding:6px 12px;
+            border-radius:20px;
+            color:red;
+            font-weight:bold;
         }
-        .progress-bar {
-            width: 0%;
-            height: 10px;
-            background: green;
-        }
-        .question-card {
-            background: white;
-            border-radius: 18px;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .question-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #1f3c88;
-            margin-bottom: 15px;
-        }
-        .option {
-            margin: 10px 0;
-            padding: 10px 12px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            display: block;
-        }
-        .submit-btn {
-            width: 100%;
-            border: none;
-            padding: 16px;
-            border-radius: 30px;
-            background: linear-gradient(90deg, #11998e, #38ef7d);
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #222;
-            font-size: 14px;
-            font-weight: bold;
+
+        .footer{
+            text-align:center;
+            padding:15px;
+            font-weight:bold;
         }
     </style>
 </head>
 <body>
 
-    <div class="topbar">
-        <div>{{ subject_name }} CBT</div>
-        <div class="right-box">
-            <div class="pill">Student: {{ student_name }}</div>
-            <div class="pill" id="timer">Time: {{ exam_timer }}</div>
+<div class="header">
+    <h3>CSC 201 CBT</h3>
+    <div>
+        Student: {{ student_name }} |
+        <span class="timer">Time: <span id="time">{{ exam_timer }}</span></span>
+    </div>
+</div>
+
+<form method="POST" action="/submit">
+<div class="container">
+
+    {% for q in questions %}
+    <div class="card">
+        <div class="question">
+            Question {{ loop.index }}: {{ q.question }}
         </div>
+
+        <label>
+            <input type="radio" name="{{ q.id }}" value="{{ q.opt1 }}"> {{ q.opt1 }}
+        </label>
+
+        <label>
+            <input type="radio" name="{{ q.id }}" value="{{ q.opt2 }}"> {{ q.opt2 }}
+        </label>
+
+        <label>
+            <input type="radio" name="{{ q.id }}" value="{{ q.opt3 }}"> {{ q.opt3 }}
+        </label>
+
+        <label>
+            <input type="radio" name="{{ q.id }}" value="{{ q.opt4 }}"> {{ q.opt4 }}
+        </label>
     </div>
+    {% endfor %}
 
-    <div class="container">
-        <div class="progress-wrap">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
+    <button type="submit" class="submit-btn">Submit Exam</button>
 
-        <form method="POST" action="/review/{{ subject_id }}" id="examForm">
-            {% for q in questions %}
-            <div class="question-card" id="q{{ q.id }}">
-                <div class="question-title">
-                    Question {{ loop.index }}: {{ q.question }}
-                </div>
+</div>
+</form>
 
-                <label class="option">
-                    <input type="radio" name="{{ q.id }}" value="{{ q.opt1 }}"> {{ q.opt1 }}
-                </label>
-                <label class="option">
-                    <input type="radio" name="{{ q.id }}" value="{{ q.opt2 }}"> {{ q.opt2 }}
-                </label>
-                <label class="option">
-                    <input type="radio" name="{{ q.id }}" value="{{ q.opt3 }}"> {{ q.opt3 }}
-                </label>
-                <label class="option">
-                    <input type="radio" name="{{ q.id }}" value="{{ q.opt4 }}"> {{ q.opt4 }}
-                </label>
-            </div>
-            {% endfor %}
+<div class="footer">
+    Designed by Ifelodun | noplysola@gmail.com
+</div>
 
-            <button type="submit" class="submit-btn">Proceed to Review</button>
-        </form>
-    </div>
+<script>
+let time = {{ exam_timer }};
 
-    <div class="palette">
-        <h4>Questions</h4>
-        {% for q in questions %}
-            <a href="#q{{ q.id }}">{{ loop.index }}</a>
-        {% endfor %}
-    </div>
+let timer = setInterval(() => {
+    time--;
+    document.getElementById("time").innerText = time;
 
-    <div class="footer">
-        Designed by Ifelodun | Contact: noplysola@gmail.com
-    </div>
-
-    <script>
-        let time = {{ exam_timer }};
-
-        setInterval(() => {
-            time--;
-            document.getElementById("timer").innerHTML = "Time: " + time;
-
-            if (time <= 0) {
-                document.getElementById("examForm").submit();
-            }
-        }, 1000);
-
-        // anti-cheat
-        document.addEventListener("visibilitychange", function () {
-            if (document.hidden) {
-                alert("Tab switch detected! Exam will submit.");
-                document.getElementById("examForm").submit();
-            }
-        });
-
-        // auto save
-        window.onload = () => {
-            let saved = JSON.parse(localStorage.getItem("answers") || "{}");
-
-            for (let key in saved) {
-                let input = document.querySelector(`input[name='${key}'][value='${saved[key]}']`);
-                if (input) input.checked = true;
-            }
-            updateProgress();
-        };
-
-        document.querySelectorAll("input[type=radio]").forEach(input => {
-            input.addEventListener("change", () => {
-                let answers = JSON.parse(localStorage.getItem("answers") || "{}");
-                answers[input.name] = input.value;
-                localStorage.setItem("answers", JSON.stringify(answers));
-                updateProgress();
-            });
-        });
-
-        function updateProgress() {
-            let total = {{ questions|length }};
-            let answered = new Set();
-
-            document.querySelectorAll("input[type=radio]:checked").forEach(i => {
-                answered.add(i.name);
-            });
-
-            let percent = total > 0 ? (answered.size / total) * 100 : 0;
-            document.getElementById("progressBar").style.width = percent + "%";
-        }
-    </script>
+    if(time <= 0){
+        clearInterval(timer);
+        alert("Time up! Submitting...");
+        document.forms[0].submit();
+    }
+}, 1000);
+</script>
 
 </body>
 </html>
