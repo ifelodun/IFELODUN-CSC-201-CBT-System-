@@ -39,17 +39,31 @@
             background:#2563eb;
             color:white;
             font-weight:bold;
-            margin-top:10px;
+            margin:8px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            color: #222;
+            font-size: 14px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h2>Exam Result</h2>
+        <h2>{{ subject_name }} Result</h2>
+        <p>Student: {{ student_name }}</p>
         <p>Your score is:</p>
         <div class="score">{{ score }}/{{ total }}</div>
+
         <a href="/home" class="btn">Back Home</a>
+        <a href="/download_result/{{ result_id }}" class="btn">Download PDF</a>
+
+        <div class="footer">
+            Designed by Ifelodun | Contact: noplysola@gmail.com
+        </div>
     </div>
 
 </body>
