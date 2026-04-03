@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Question</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body{
+            margin:0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+        }
+        .container{
+            width:90%;
+            max-width:700px;
+            margin:40px auto;
+        }
+        .card{
+            background:white;
+            border-radius:18px;
+            box-shadow:0 8px 20px rgba(0,0,0,0.12);
+            padding:25px;
+        }
+        input, select{
+            width:100%;
+            box-sizing:border-box;
+            padding:12px;
+            margin-bottom:14px;
+            border:1px solid #ccc;
+            border-radius:10px;
+            font-size:15px;
+        }
+        .btn{
+            text-decoration:none;
+            border:none;
+            padding:12px 20px;
+            border-radius:24px;
+            color:white;
+            font-weight:bold;
+            cursor:pointer;
+            display:inline-block;
+            margin-right:10px;
+        }
+        .btn-back{ background:#6b7280; }
+        .btn-save{ background:#16a34a; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h2>Edit Question</h2>
+
+        <form method="POST">
+            <select name="subject" required>
+                {% for s in subjects %}
+                <option value="{{ s.name }}" {% if s.name == q.subject %}selected{% endif %}>{{ s.name }}</option>
+                {% endfor %}
+            </select>
+
+            <input name="question" value="{{ q.question }}" required>
+            <input name="opt1" value="{{ q.opt1 }}" required>
+            <input name="opt2" value="{{ q.opt2 }}" required>
+            <input name="opt3" value="{{ q.opt3 }}" required>
+            <input name="opt4" value="{{ q.opt4 }}" required>
+            <input name="answer" value="{{ q.answer }}" required>
+
+            <a href="/admin" class="btn btn-back">Back</a>
+            <button type="submit" class="btn btn-save">Update Question</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
