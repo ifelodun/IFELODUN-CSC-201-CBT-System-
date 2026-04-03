@@ -6,65 +6,55 @@
     <style>
         body{
             margin:0;
-            font-family: Arial, sans-serif;
             min-height:100vh;
             display:flex;
             justify-content:center;
             align-items:center;
-            background: linear-gradient(135deg, #89f7fe, #66a6ff);
+            font-family:Arial, sans-serif;
+            background:linear-gradient(135deg,#89f7fe,#66a6ff);
         }
-
         .card{
             background:white;
             border-radius:20px;
-            box-shadow:0 10px 24px rgba(0,0,0,0.15);
             padding:35px;
             width:90%;
-            max-width:500px;
+            max-width:520px;
             text-align:center;
+            box-shadow:0 10px 24px rgba(0,0,0,0.15);
         }
-
         .score{
-            font-size:48px;
+            font-size:46px;
             font-weight:bold;
             color:#16a34a;
             margin:20px 0;
         }
-
+        .grade{
+            font-size:28px;
+            font-weight:bold;
+            color:#1d4ed8;
+        }
         .btn{
-            text-decoration:none;
             display:inline-block;
-            padding:12px 22px;
-            border-radius:24px;
+            margin-top:16px;
+            text-decoration:none;
             background:#2563eb;
             color:white;
+            padding:12px 22px;
+            border-radius:24px;
             font-weight:bold;
-            margin:8px;
-        }
-
-        .footer {
-            margin-top: 20px;
-            color: #222;
-            font-size: 14px;
-            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h2>{{ subject_name }} Result</h2>
-        <p>Student: {{ student_name }}</p>
-        <p>Your score is:</p>
-        <div class="score">{{ score }}/{{ total }}</div>
-
-        <a href="/home" class="btn">Back Home</a>
-        <a href="/download_result/{{ result_id }}" class="btn">Download PDF</a>
-
-        <div class="footer">
-            Designed by Ifelodun | Contact: noplysola@gmail.com
-        </div>
-    </div>
+<div class="card">
+    <h2>{{ subject_name }} Result</h2>
+    <p>Student: {{ student_name }}</p>
+    <div class="score">{{ score }}/{{ total }}</div>
+    <p>Percentage: {{ percentage }}%</p>
+    <div class="grade">Grade: {{ grade }}</div>
+    <a href="/home" class="btn">Back Home</a>
+</div>
 
 </body>
 </html>
