@@ -6,8 +6,8 @@
     <style>
         body{
             margin:0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #84fab0, #8fd3f4);
+            font-family:Arial, sans-serif;
+            background:linear-gradient(135deg,#84fab0,#8fd3f4);
         }
         .container{
             width:90%;
@@ -51,7 +51,6 @@
     </style>
 </head>
 <body>
-
 <div class="container">
     <div class="card">
         <h2>Import Questions from Excel</h2>
@@ -63,8 +62,10 @@
             Column C = option 2<br>
             Column D = option 3<br>
             Column E = option 4<br>
-            Column F = answer<br><br>
-            Start data from row 2.
+            Column F = answer<br>
+            Column G = explanation<br><br>
+            Start real data from row 2.<br><br>
+            If the same question already exists for the selected subject, it will be updated instead of duplicated.
         </div>
 
         <form method="POST" enctype="multipart/form-data">
@@ -82,6 +83,5 @@
         </form>
     </div>
 </div>
-
 </body>
 </html>
